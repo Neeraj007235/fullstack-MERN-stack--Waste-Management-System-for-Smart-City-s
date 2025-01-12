@@ -22,12 +22,14 @@ const UserDetailPage = () => {
     fetchUsers();
   }, []);
 
-  if (loading)
+  // Loading spinner
+  if (loading) {
     return (
-      <div className="text-center mt-10">
-        <span className="text-gray-700 font-bold text-lg">Loading...</span>
+      <div className="flex justify-center items-center h-screen">
+        <div className="border-t-4 border-blue-500 w-16 h-16 rounded-full animate-spin"></div>
       </div>
     );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-gray-100 to-blue-300 py-10">

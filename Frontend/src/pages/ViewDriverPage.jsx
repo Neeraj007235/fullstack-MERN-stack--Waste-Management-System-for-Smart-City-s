@@ -9,21 +9,24 @@ const ViewDriverPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({});
+  const [loading, setLoading] = useState(false); // State to track loading
+  const [actionLoading, setActionLoading] = useState({});  // To track the loading state for save or delete (null, 'save', or 'delete')
 
   useEffect(() => {
     const fetchDrivers = async () => {
+      setLoading(true);
       try {
         const response = await axiosInstance.get("/drivers");
-        console.log("Response data:", response.data);
         setDrivers(response.data);
       } catch (error) {
         console.error("Error fetching drivers:", error);
         toast.error("Failed to fetch drivers. Please try again.");
+      } finally {
+        setLoading(false); // End loading
       }
     };
     fetchDrivers();
   }, []);
-
 
   const filteredDrivers = drivers.filter((driver) =>
     Object.values(driver).some((value) =>
@@ -42,6 +45,7 @@ const ViewDriverPage = () => {
   };
 
   const handleSave = async () => {
+    setActionLoading((prev) => ({ ...prev, [editingId]: { save: true, delete: false } })); // Mark save as true
     try {
       const response = await axiosInstance.put(`/drivers/${editingId}`, formData);
       setDrivers(
@@ -55,10 +59,13 @@ const ViewDriverPage = () => {
     } catch (error) {
       console.error("Error saving driver:", error);
       toast.error("Failed to update the driver. Please try again.");
+    } finally {
+      setActionLoading((prev) => ({ ...prev, [editingId]: { save: false, delete: false } })); // Reset all actions
     }
   };
 
   const handleDelete = async (id) => {
+    setActionLoading((prev) => ({ ...prev, [id]: { save: false, delete: true } })); // Mark delete as true for this specific driver
     try {
       await axiosInstance.delete(`/drivers/${id}`);
       setDrivers(drivers.filter((driver) => driver._id !== id && driver.id !== id));
@@ -66,12 +73,13 @@ const ViewDriverPage = () => {
     } catch (error) {
       console.error("Error deleting driver:", error);
       toast.error("Failed to delete the driver. Please try again.");
+    } finally {
+      setActionLoading((prev) => ({ ...prev, [id]: { save: false, delete: false } })); // Reset all actions for this specific driver
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-gray-900 via-purple-900 to-indigo-900 py-10 bg-cover bg-fixed relative">
-
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <h1 className="text-4xl font-extrabold text-center text-white mb-8">
           Manage Driver Details
@@ -86,6 +94,12 @@ const ViewDriverPage = () => {
             className="w-full px-6 py-3 border-2 border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-md text-lg bg-gray-800 text-white"
           />
         </div>
+
+        {loading && (
+          <div className="flex justify-center items-center space-x-4 mb-8">
+            <div className="border-t-4 border-t-white w-16 h-16 rounded-full animate-spin"></div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredDrivers.map((driver) =>
@@ -120,9 +134,15 @@ const ViewDriverPage = () => {
                   <button
                     onClick={handleSave}
                     className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition"
+                    disabled={actionLoading[editingId]?.save} // Disable based on save action loading state for this driver
                   >
-                    Save
+                    {actionLoading[editingId]?.save ? ( // Show spinner for save action
+                      <div className="border-t-4 border-t-white w-4 h-4 rounded-full animate-spin mx-auto"></div>
+                    ) : (
+                      "Save"
+                    )}
                   </button>
+
                 </div>
               </motion.div>
             ) : (
@@ -160,10 +180,15 @@ const ViewDriverPage = () => {
                   </button>
 
                   <button
-                    onClick={() => handleDelete(driver._id || driver.id)}
+                    onClick={() => handleDelete(driver._id)} // Pass the specific driver's ID
                     className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition"
+                    disabled={actionLoading[driver._id]?.delete} // Disable based on delete action loading state for this driver
                   >
-                    Delete
+                    {actionLoading[driver._id]?.delete ? ( // Show spinner for delete action on this driver
+                      <div className="border-t-4 border-t-white w-4 h-4 rounded-full animate-spin mx-auto"></div>
+                    ) : (
+                      "Delete"
+                    )}
                   </button>
                 </div>
               </motion.div>

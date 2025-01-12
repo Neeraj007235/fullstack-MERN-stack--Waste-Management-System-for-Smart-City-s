@@ -39,7 +39,9 @@ const MyComplaintPage = () => {
         <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">My Complaints</h1>
 
         {loading ? (
-          <p className="text-center text-lg font-medium text-gray-600">Loading...</p>
+          <div className="flex justify-center items-center">
+            <div className="border-t-4 border-blue-500 w-16 h-16 rounded-full animate-spin"></div>
+          </div>
         ) : complaints.length > 0 ? (
           <ul className="space-y-6">
             {complaints.map((complaint) => (

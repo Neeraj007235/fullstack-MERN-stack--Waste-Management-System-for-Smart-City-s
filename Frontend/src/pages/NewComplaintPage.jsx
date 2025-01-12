@@ -10,6 +10,7 @@ const NewComplaintPage = () => {
     const [complaintText, setComplaintText] = useState(''); // State to store complaint text
     const [searchTerm, setSearchTerm] = useState(''); // Search term for filtering bins
     const [loading, setLoading] = useState(false); // Loading state for submission
+    const [binsLoading, setBinsLoading] = useState(true); // Loading state for bins
     const [openBinId, setOpenBinId] = useState(null); // Track the open bin ID
 
     // Fetch bins from API
@@ -21,6 +22,8 @@ const NewComplaintPage = () => {
             } catch (error) {
                 console.error("Error fetching bins:", error);
                 setBins([]); // Fallback to empty array in case of error
+            } finally {
+                setBinsLoading(false); // Set bins loading to false once data is fetched
             }
         };
         getBins();
@@ -32,7 +35,7 @@ const NewComplaintPage = () => {
             toast.error('Please enter a complaint!');
             return;
         }
-        setLoading(true);
+        setLoading(true); // Start loading when submitting the complaint
 
         const binName = bins.find((bin) => bin._id === binId)?.bin; // Find the bin name
         const now = new Date();
@@ -51,7 +54,6 @@ const NewComplaintPage = () => {
         }
 
         const userEmail = user.email;
-
         const complaintData = {
             binArea: binName,
             complaint: complaintText,
@@ -73,7 +75,7 @@ const NewComplaintPage = () => {
             console.log('Error submitting complaint:', error);
             toast.error('Failed to submit complaint');
         } finally {
-            setLoading(false);
+            setLoading(false); // Stop loading after submission attempt
         }
     };
 
@@ -97,77 +99,95 @@ const NewComplaintPage = () => {
         <div className="min-h-screen bg-gradient-to-r from-blue-400 to-green-400 py-10">
             <div className="max-w-7xl mx-auto px-4">
                 <h1 className="text-3xl font-bold text-center text-white mb-8">Post Complaints</h1>
-                <div className="mb-6">
-                    <input
-                        type="text"
-                        placeholder="Search by any field"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredBins.map((bin) => (
-                        <div key={bin._id} className="p-4 border border-gray-300 rounded-lg shadow-md transform hover:scale-105 transition duration-300 ease-in-out">
-                            <motion.div
-                                initial={{ opacity: 0 }} // Start with 0 opacity
-                                animate={{ opacity: 1 }} // Animate to full opacity
-                                transition={{ duration: 0.3 }} // Duration of the animation
-                            >
-                                <p><strong>Bin Name:</strong> {bin.bin}</p>
-                                <p><strong>Locality:</strong> {bin.locality}</p>
-                                <p><strong>Landmark:</strong> {bin.landmark}</p>
-                                <p><strong>City:</strong> {bin.city}</p>
-                                <br />
-                                <p><strong>Latitude:</strong> {bin.latitude}</p>
-                                <p><strong>Longitude:</strong> {bin.longitude}</p>
 
-                                {/* Buttons to Add Complaint and Show Map */}
-                                <div className="mt-4">
-                                    <button
-                                        onClick={() => setOpenBinId(openBinId === bin._id ? null : bin._id)} // Toggle complaint form for this bin
-                                        className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition mr-4"
-                                    >
-                                        {openBinId === bin._id ? 'Cancel Complaint' : 'Add Complaint'}
-                                    </button>
-
-                                    <button
-                                        onClick={() => handleShowMap(bin.latitude, bin.longitude)}
-                                        className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
-                                    >
-                                        Show Map
-                                    </button>
-                                </div>
-
-                                {/* Only show the complaint form for the selected bin */}
-                                {openBinId === bin._id && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: -20 }} // Start with 0 opacity and y-offset
-                                        animate={{ opacity: 1, y: 0 }} // Animate to full opacity and no y-offset
-                                        transition={{ duration: 0.3 }} // Duration of the animation
-                                        className="mt-4"
-                                    >
-                                        <textarea
-                                            value={complaintText}
-                                            onChange={(e) => setComplaintText(e.target.value)}
-                                            rows="3"
-                                            placeholder="Enter your complaint here"
-                                            className="border p-2 rounded-md w-full"
-                                        />
-                                        <button
-                                            onClick={() => handleSubmitComplaint(bin._id)}
-                                            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition mt-2"
-                                            disabled={loading}
-                                        >
-                                            {loading ? 'Submitting...' : 'Submit Complaint'}
-                                        </button>
-                                    </motion.div>
-                                )}
-                            </motion.div>
+                {/* Loading Spinner while bins are loading */}
+                {binsLoading ? (
+                    <div className="flex justify-center items-center h-screen">
+                        <div className="border-t-4 border-blue-500 w-16 h-16 rounded-full animate-spin"></div>
+                    </div>
+                ) : (
+                    <>
+                        <div className="mb-6">
+                            <input
+                                type="text"
+                                placeholder="Search by any field"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
                         </div>
-                    ))}
-                </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {filteredBins.map((bin) => (
+                                <div key={bin._id} className="p-4 border border-gray-300 rounded-lg shadow-md transform hover:scale-105 transition duration-300 ease-in-out">
+                                    <motion.div
+                                        initial={{ opacity: 0 }} // Start with 0 opacity
+                                        animate={{ opacity: 1 }} // Animate to full opacity
+                                        transition={{ duration: 0.3 }} // Duration of the animation
+                                    >
+                                        <p><strong>Bin Name:</strong> {bin.bin}</p>
+                                        <p><strong>Locality:</strong> {bin.locality}</p>
+                                        <p><strong>Landmark:</strong> {bin.landmark}</p>
+                                        <p><strong>City:</strong> {bin.city}</p>
+                                        <br />
+                                        <p><strong>Latitude:</strong> {bin.latitude}</p>
+                                        <p><strong>Longitude:</strong> {bin.longitude}</p>
+
+                                        {/* Buttons to Add Complaint and Show Map */}
+                                        <div className="mt-4">
+                                            <button
+                                                onClick={() => setOpenBinId(openBinId === bin._id ? null : bin._id)} // Toggle complaint form for this bin
+                                                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition mr-4"
+                                            >
+                                                {openBinId === bin._id ? 'Cancel Complaint' : 'Add Complaint'}
+                                            </button>
+
+                                            <button
+                                                onClick={() => handleShowMap(bin.latitude, bin.longitude)}
+                                                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
+                                            >
+                                                Show Map
+                                            </button>
+                                        </div>
+
+                                        {/* Only show the complaint form for the selected bin */}
+                                        {openBinId === bin._id && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: -20 }} // Start with 0 opacity and y-offset
+                                                animate={{ opacity: 1, y: 0 }} // Animate to full opacity and no y-offset
+                                                transition={{ duration: 0.3 }} // Duration of the animation
+                                                className="mt-4"
+                                            >
+                                                <textarea
+                                                    value={complaintText}
+                                                    onChange={(e) => setComplaintText(e.target.value)}
+                                                    rows="3"
+                                                    placeholder="Enter your complaint here"
+                                                    className="border p-2 rounded-md w-full"
+                                                />
+                                                <button
+                                                    onClick={() => handleSubmitComplaint(bin._id)}
+                                                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition mt-2"
+                                                    disabled={loading}
+                                                >
+                                                    {loading ? (
+                                                        <div className="flex justify-center items-center space-x-2">
+                                                            <div className="border-t-4 border-blue-500 w-5 h-5 rounded-full animate-spin"></div>
+                                                            <span>Submitting...</span>
+                                                        </div>
+                                                    ) : (
+                                                        'Submit Complaint'
+                                                    )}
+                                                </button>
+                                            </motion.div>
+                                        )}
+                                    </motion.div>
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                )}
             </div>
+
             {/* Toast container to display toasts */}
             <ToastContainer />
         </div>

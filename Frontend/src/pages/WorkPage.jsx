@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { axiosInstance } from "../lib/axios.js";
+import { formatTime } from '../lib/utils.js';
 import { FaCheckCircle, FaExclamationCircle, FaMapMarkerAlt } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -53,12 +54,13 @@ const WorkPage = () => {
 
   const handleStatusUpdate = async (newStatus) => {
     const now = new Date();
+    const formattedTime = formatTime(now);  // Format the time using the imported function
     const work = {
       area: driverArea,
       email: driverEmail,
       status: newStatus,
       date: now.toISOString().split('T')[0],
-      time: now.toLocaleTimeString(),
+      time: formattedTime,
     };
 
     try {
