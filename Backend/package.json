@@ -5,8 +5,8 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "dev": "NODE_ENV = development nodemon src/index.js",
-    "start": "NODE_ENV = production node src/index.js"
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js"
   },
   "author": "Neeraj",
   "license": "ISC",
