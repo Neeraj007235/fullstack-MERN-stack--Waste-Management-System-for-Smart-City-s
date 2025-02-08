@@ -26,12 +26,10 @@ export const getUserByEmail = async (req, res) => {
     // Find the user with the given email
     const user = await User.findOne({ email });
 
-    // If user is not found, return a 404 error
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Return the user data excluding password for security
     res.status(200).json({
       _id: user._id,
       name: user.name,
@@ -51,7 +49,6 @@ export const updateUserProfile = async (req, res) => {
   const { email, mobile, city } = req.body;
 
   try {
-    // Ensure user exists
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -74,27 +71,27 @@ export const updateUserProfile = async (req, res) => {
 
     await user.save();
 
-    console.log("User updated successfully:", user); // Log the updated user
+    console.log("User updated successfully:", user); 
 
     res.status(200).json(user);
   } catch (error) {
-    console.error("Error updating user profile:", error); // Log the error
+    console.error("Error updating user profile:", error);
     res.status(500).json({ message: "Error updating user profile", error: error.message });
   }
 };
 
 export const signup = async (req, res) => {
   try {
-    const { name, email, password, mobile, city } = req.body; // Added mobile and city
+    const { name, email, password, mobile, city } = req.body; 
 
     if (password.length < 6) {
-      return res.status(400).json({ message: "Password must be at least 6 characters" });
+      return res.status(400).json({ message: "Password must be at least 6 characters long" });
     }
 
     // Check if user already exists by email or mobile
     const existingUser = await User.findOne({ $or: [{ email }, { mobile }] });
     if (existingUser) {
-      return res.status(400).json({ message: "Email or mobile number is already registered" });
+      return res.status(400).json({ message: "This email or mobile number is already in use." });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -111,7 +108,7 @@ export const signup = async (req, res) => {
 
     generateToken(newUser._id, res);
     res.status(201).json({
-      message: "User created successfully!",
+      message: "User account created successfully.",
       user: {
         _id: newUser._id,
         name: newUser.name,
@@ -122,7 +119,7 @@ export const signup = async (req, res) => {
     });
   } catch (error) {
     console.log("Error: " + error.message);
-    res.status(500).json({ message: "Internal Server error" });
+    res.status(500).json({ message: "Internal server error. Please try again later." });
   }
 };
 
@@ -130,14 +127,19 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ message: "No account found with this email." });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!user || !isMatch) {
-      return res.status(400).json({ message: "Invalid useremail or password" });
+    if (!isMatch) {
+      return res.status(400).json({ message: "Incorrect password. Please try again." });
     }
 
     generateToken(user._id, res);
     res.status(200).json({
-      message: "Login successful",
+      message: "Login successful! You are now logged in.",
       user: {
         _id: user._id,
         name: user.name,
@@ -146,7 +148,7 @@ export const login = async (req, res) => {
     });
   } catch (error) {
     console.log("Error: " + error.message);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error. Please try again later." });
   }
 };
 

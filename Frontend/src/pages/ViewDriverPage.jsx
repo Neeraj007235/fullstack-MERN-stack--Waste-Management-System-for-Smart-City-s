@@ -79,11 +79,9 @@ const ViewDriverPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-gray-900 via-purple-900 to-indigo-900 py-10 bg-cover bg-fixed relative">
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <h1 className="text-4xl font-extrabold text-center text-white mb-8">
-          Manage Driver Details
-        </h1>
+    <div className="min-h-screen bg-gradient-to-r from-gray-700 via-purple-600 to-indigo-600 py-12 px-6 relative">
+      <div className="max-w-7xl mx-auto space-y-12">
+        <h1 className="text-4xl font-extrabold text-center text-white mb-8">Manage Driver Details</h1>
 
         <div className="mb-6">
           <input
@@ -91,7 +89,7 @@ const ViewDriverPage = () => {
             placeholder="Search drivers..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-6 py-3 border-2 border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-md text-lg bg-gray-800 text-white"
+            className="w-full px-6 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-md text-lg  text-gray-800"
           />
         </div>
 
@@ -106,7 +104,7 @@ const ViewDriverPage = () => {
             editingId === driver._id ? (
               <motion.div
                 key={driver._id}
-                className="bg-gradient-to-r from-purple-800 to-indigo-800 p-8 rounded-xl shadow-2xl transform transition duration-500 ease-in-out hover:scale-105"
+                className="bg-gradient-to-r from-purple-500 to-indigo-500 p-8 rounded-xl shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
@@ -119,7 +117,7 @@ const ViewDriverPage = () => {
                       value={formData[field] || ""}
                       onChange={handleInputChange}
                       placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-                      className="w-full px-6 py-3 border-2 border-gray-500 rounded-lg shadow-xl focus:ring-2 focus:ring-purple-500 text-lg bg-gray-700 text-white"
+                      className="w-full mb-4 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 text-gray-800 shadow-sm"
                     />
                   ))}
                 </form>
@@ -134,21 +132,20 @@ const ViewDriverPage = () => {
                   <button
                     onClick={handleSave}
                     className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition"
-                    disabled={actionLoading[editingId]?.save} // Disable based on save action loading state for this driver
+                    disabled={actionLoading[editingId]?.save}
                   >
-                    {actionLoading[editingId]?.save ? ( // Show spinner for save action
+                    {actionLoading[editingId]?.save ? (
                       <div className="border-t-4 border-t-white w-4 h-4 rounded-full animate-spin mx-auto"></div>
                     ) : (
                       "Save"
                     )}
                   </button>
-
                 </div>
               </motion.div>
             ) : (
               <motion.div
                 key={driver._id}
-                className="bg-gradient-to-r from-gray-700 to-purple-700 p-6 rounded-xl shadow-lg hover:scale-105 hover:shadow-xl transition duration-300 ease-in-out"
+                className="bg-gradient-to-r from-gray-600 to-purple-600 p-6 rounded-xl shadow-lg hover:scale-105 hover:shadow-xl transition duration-300 ease-in-out"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
@@ -174,17 +171,17 @@ const ViewDriverPage = () => {
                 <div className="mt-6 flex gap-6">
                   <button
                     onClick={() => handleUpdateClick(driver)}
-                    className="bg-yellow-500 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition"
+                    className="bg-yellow-500 text-white px-6 py-3 rounded-lg hover:bg-yellow-600 transition"
                   >
                     Update
                   </button>
 
                   <button
-                    onClick={() => handleDelete(driver._id)} // Pass the specific driver's ID
+                    onClick={() => handleDelete(driver._id)}
                     className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition"
-                    disabled={actionLoading[driver._id]?.delete} // Disable based on delete action loading state for this driver
+                    disabled={actionLoading[driver._id]?.delete}
                   >
-                    {actionLoading[driver._id]?.delete ? ( // Show spinner for delete action on this driver
+                    {actionLoading[driver._id]?.delete ? (
                       <div className="border-t-4 border-t-white w-4 h-4 rounded-full animate-spin mx-auto"></div>
                     ) : (
                       "Delete"

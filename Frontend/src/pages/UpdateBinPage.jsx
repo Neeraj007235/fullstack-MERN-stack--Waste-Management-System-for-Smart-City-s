@@ -122,7 +122,7 @@ const UpdateBinPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-800 via-pink-600 to-yellow-500 py-10 bg-fixed bg-cover bg-center relative">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-800 via-purple-600 to-blue-700 py-10 bg-fixed bg-cover bg-center relative">
       <div className="absolute inset-0 bg-black bg-opacity-50 z-0"></div>
       <div className="max-w-7xl mx-auto px-4 relative z-10">
         <h1 className="text-5xl font-bold text-center text-white mb-8">Manage Bins</h1>
@@ -154,16 +154,7 @@ const UpdateBinPage = () => {
                 >
                   <h2 className="text-xl font-bold text-white mb-4">Update Bin</h2>
                   <form>
-                    {[
-                      "bin",
-                      "locality",
-                      "landmark",
-                      "city",
-                      "loadType",
-                      "driverEmail",
-                      "cyclePeriod",
-                      "bestRoute",
-                    ].map((field) => (
+                    {["bin","locality","landmark","city","loadType","driverEmail","cyclePeriod","bestRoute"].map((field) => (
                       <input
                         key={field}
                         name={field}

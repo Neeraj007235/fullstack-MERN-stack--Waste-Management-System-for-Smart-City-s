@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { axiosInstance } from "../lib/axios.js";
 
 const MyComplaintPage = () => {
-  const [complaints, setComplaints] = useState([]); // State to store complaints
-  const [loading, setLoading] = useState(true); // Loading state
+  const [complaints, setComplaints] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const user = JSON.parse(localStorage.getItem("Users")); // Get the current user from localStorage
-  const userEmail = user?.email; // Get the user's email
+  const user = JSON.parse(localStorage.getItem("User"));
+  const userEmail = user?.email;
 
   useEffect(() => {
     const fetchComplaints = async () => {
@@ -33,6 +33,18 @@ const MyComplaintPage = () => {
     }
   }, [userEmail]);
 
+  // Function to determine border and status badge styles
+  const getStatusStyles = (status) => {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return 'border-yellow-500 bg-yellow-50 text-yellow-700';
+      case 'resolved':
+        return 'border-green-500 bg-green-50 text-green-700';
+      case 'rejected':
+        return 'border-red-500 bg-red-50 text-red-700';
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-r from-indigo-500 to-purple-500 py-10">
       <div className="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow-2xl">
@@ -45,15 +57,22 @@ const MyComplaintPage = () => {
         ) : complaints.length > 0 ? (
           <ul className="space-y-6">
             {complaints.map((complaint) => (
-              <li key={complaint._id} className="p-5 border-l-4 border-blue-500 bg-gray-50 rounded-md shadow-md">
-                <h2 className="text-2xl font-semibold text-blue-700 mb-2">
+              <li
+                key={complaint._id}
+                className={`p-5 border-l-4 rounded-md shadow-md ${getStatusStyles(complaint.status)}`}
+              >
+                <h2 className="text-2xl font-semibold mb-2">
                   Bin Area: <span className="text-gray-800">{complaint.binArea}</span>
                 </h2>
                 <p className="text-gray-700 mb-1">
                   <strong>Complaint:</strong> {complaint.complaint}
                 </p>
-                <p className="text-gray-600">
-                  <strong>Status:</strong> {complaint.status}
+                {/* Status with Label */}
+                <p className="text-gray-600 font-medium">
+                  <strong>Status: </strong>
+                  <span className={`inline-block py-1 text-sm font-semibold rounded-lg ${getStatusStyles(complaint.status)}`}>
+                    {complaint.status}
+                  </span>
                 </p>
                 <div className="mt-2 text-sm text-gray-500">
                   <p><strong>Date:</strong> {complaint.date}</p>

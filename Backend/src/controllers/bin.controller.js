@@ -1,4 +1,3 @@
-// controller/bin.controller.js
 import Bin from "../models/bin.model.js";
 import axios from 'axios';
 

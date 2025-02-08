@@ -8,11 +8,11 @@ export const createDriver = async (req, res) => {
 
   try {
     if (password.length < 6) {
-      return res.status(400).json({ message: "Password must be at least 6 characters" });
+      return res.status(400).json({ message: "Password must be at least 6 characters long" });
     }
     const existingDriver = await Driver.findOne({ $or: [{ email }, { mobile }] });
     if (existingDriver) {
-      return res.status(400).json({ message: "Email or mobile number is already registered" });
+      return res.status(400).json({ message: "This email or mobile number is already in use." });
     }
     // Hash the password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -20,17 +20,17 @@ export const createDriver = async (req, res) => {
     const newDriver = new Driver({
       name,
       email,
-      password: hashedPassword, // In a real-world app, hash the password before saving!
+      password: hashedPassword, 
       mobile,
       address,
       area,
       id,
     });
     await newDriver.save();
-    res.status(201).json({ message: 'Driver created successfully', driver: newDriver });
+    res.status(201).json({ message: 'Driver created successfully.', driver: newDriver });
   } catch (error) {
-    console.error('Error creating driver:', error); // Log the error for debugging
-    res.status(500).json({ message: 'Error creating driver', error: error.message });
+    console.error('Error creating driver:', error); 
+    res.status(500).json({ message: 'Internal server error. Please try again later.' });
   }
 };
 
@@ -68,14 +68,19 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const driver = await Driver.findOne({ email });
+
+    if (!driver) {
+      return res.status(400).json({ message: "No account found with this email." });
+    }
+
     const isMatch = await bcrypt.compare(password, driver.password);
-    if (!driver || !isMatch) {
-      return res.status(400).json({ message: "Invalid driveremail or password" });
+    if (!isMatch) {
+      return res.status(400).json({ message: "Incorrect password. Please try again." });
     }
 
     generateToken(driver._id, res);
     res.status(200).json({
-      message: "Login successful",
+      message: "Login successful! You are now logged in.",
       driver: {
         _id: driver._id,
         name: driver.name,
@@ -84,7 +89,7 @@ export const login = async (req, res) => {
     });
   } catch (error) {
     console.log("Error: " + error.message);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error. Please try again later." });
   }
 };
 

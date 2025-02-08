@@ -16,7 +16,7 @@ const UserPage = () => {
         navigate("/");
       }, 0); 
       await axiosInstance.post("/users/logout");
-      localStorage.removeItem("Users");
+      localStorage.removeItem("User");
       setAuthUser(null);
       toast.success("Logout Successfully");
     } catch (error) {
@@ -25,13 +25,13 @@ const UserPage = () => {
   };
 
   const sections = [
-    { title: "My Profile", image: 'https://img.icons8.com/plasticine/100/user.png', link: "/myprofile", bg: "bg-gradient-to-tr from-blue-400 to-blue-600" },
-    { title: "New Complaints", image: 'https://img.icons8.com/external-flaticons-lineal-color-flat-icons/100/external-complaint-gdpr-icons-flaticons-lineal-color-flat-icons.png', link: "/new_complaint", bg: "bg-gradient-to-tr from-yellow-400 to-orange-500" },
-    { title: "My Complaints", image: 'https://img.icons8.com/external-flat-icons-pack-pongsakorn-tan/100/external-audit-gdpr-flat-icons-pack-pongsakorn-tan.png', link: "/my_complaint", bg: "bg-gradient-to-tr from-purple-500 to-pink-400" }
-  ];
+    { title: "My Profile", image: 'https://img.icons8.com/plasticine/100/user.png', link: "/myprofile", bg: "bg-gradient-to-tr from-blue-600 to-blue-500" },
+    { title: "New Complaints", image: 'https://img.icons8.com/external-flaticons-lineal-color-flat-icons/100/external-complaint-gdpr-icons-flaticons-lineal-color-flat-icons.png', link: "/new_complaint", bg: "bg-gradient-to-tr from-gray-600 to-gray-500" },  // Changed to gray
+    { title: "My Complaints", image: 'https://img.icons8.com/external-flat-icons-pack-pongsakorn-tan/100/external-audit-gdpr-flat-icons-pack-pongsakorn-tan.png', link: "/my_complaint", bg: "bg-gradient-to-tr from-purple-600 to-purple-400" }
+  ];  
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-purple-600 via-indigo-700 to-gray-900 text-white">
+    <div className="min-h-screen bg-gradient-to-r from-indigo-900 via-blue-800 to-teal-700 text-white">
       {/* Use Header */}
       <DashboardHeader roleName="User" handleLogout={handleLogout} />
 

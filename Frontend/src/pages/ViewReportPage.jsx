@@ -6,7 +6,6 @@ const ViewReportPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch reports from the database (mock API call here)
     axiosInstance.get("/find")
       .then((response) => {
         setReports(response.data);

@@ -4,6 +4,7 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 
 import { connectDB } from "./lib/db.js"
+import "./lib/cron.js";
 import path from "path";
 
 import binRoutes from "./routes/bin.route.js"
@@ -46,6 +47,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`)
-    connectDB();
+  console.log(`Server listening on port ${PORT}`)
+  connectDB();
+  // Cron jobs will run automatically when the server starts because of the import
 })

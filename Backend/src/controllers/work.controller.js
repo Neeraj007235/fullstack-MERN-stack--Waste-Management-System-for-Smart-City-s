@@ -22,7 +22,6 @@ export const createWork = async (req, res) => {
 
     // Save the work to the database
     await newWork.save();
-
     res.status(201).json({ message: 'Work submitted to the database successfully', work: newWork });
   } catch (error) {
     console.error('Error creating work:', error);

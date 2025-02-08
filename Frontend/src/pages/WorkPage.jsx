@@ -12,7 +12,7 @@ const WorkPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const driver = JSON.parse(localStorage.getItem('Drivers'));
+    const driver = JSON.parse(localStorage.getItem('Driver'));
     const email = driver?.email;
     setDriverEmail(email);
 
@@ -54,7 +54,7 @@ const WorkPage = () => {
 
   const handleStatusUpdate = async (newStatus) => {
     const now = new Date();
-    const formattedTime = formatTime(now);  // Format the time using the imported function
+    const formattedTime = formatTime(now);  
     const work = {
       area: driverArea,
       email: driverEmail,
@@ -138,19 +138,26 @@ const WorkPage = () => {
 
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold text-white">Update Status</h3>
-                <div className="flex flex-wrap space-x-4 justify-center sm:justify-start">
+                <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 justify-center sm:justify-start">
                   {['In Progress', 'Completed', 'Incomplete'].map((status) => (
                     <button
                       key={status}
                       onClick={() => handleStatusUpdate(status)}
-                      className={`flex items-center px-6 py-3 rounded-md transition ease-in-out transform hover:scale-105 ${status === 'In Progress' ? 'bg-blue-600 hover:bg-blue-700' :
-                        status === 'Completed' ? 'bg-green-600 hover:bg-green-700' :
-                          'bg-red-600 hover:bg-red-700'
-                        } text-white sm:px-4 sm:py-2`}
+                      className={`flex items-center space-x-3 sm:space-x-4 text-white font-medium px-6 py-3 rounded-xl transition duration-300 transform hover:scale-105 hover:shadow-xl focus:outline-none 
+                          ${status === 'In Progress'
+                          ? 'bg-blue-600 hover:bg-blue-700'
+                          : status === 'Completed'
+                            ? 'bg-green-600 hover:bg-green-700'
+                            : 'bg-red-600 hover:bg-red-700'
+                        }`}
                       aria-label={`Update status to ${status}`}
                     >
-                      {status === 'Incomplete' ? <FaExclamationCircle className="mr-2" /> : <FaCheckCircle className="mr-2" />}
-                      {status}
+                      {status === 'Incomplete' ? (
+                        <FaExclamationCircle className="text-xl sm:text-2xl" />
+                      ) : (
+                        <FaCheckCircle className="text-xl sm:text-2xl" />
+                      )}
+                      <span className="text-sm sm:text-base">{status}</span>
                     </button>
                   ))}
                 </div>
@@ -162,11 +169,11 @@ const WorkPage = () => {
                   {binDetails.length > 0 && (
                     <button
                       onClick={() => handleShowMap(binDetails)}
-                      className="flex items-center justify-center bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition transform hover:scale-105 mt-6 sm:px-4 sm:py-2"
+                      className="flex items-center space-x-3 sm:space-x-4 bg-green-600 text-white font-medium px-6 py-3 rounded-xl transition duration-300 transform hover:scale-105 hover:shadow-xl focus:outline-none sm:px-6 sm:py-3 mt-6"
                       aria-label="Show bins on map"
                     >
-                      <FaMapMarkerAlt className="mr-3" />
-                      Show Map
+                      <FaMapMarkerAlt className="text-xl sm:text-2xl" />
+                      <span className="text-sm sm:text-base">Show Map</span>
                     </button>
                   )}
                 </div>
