@@ -2,7 +2,7 @@ import cron from "node-cron";
 import Work from "../models/work.model.js";
 
 // Schedule a cron job that runs every day at midnight
-cron.schedule("0 0 * * *", async () => {
+cron.schedule("* * * * *", async () => {
     try {
         const now = new Date();
         const yesterday = new Date(now);
@@ -20,4 +20,7 @@ cron.schedule("0 0 * * *", async () => {
     } catch (error) {
         console.error('Error deleting previous day work:', error);
     }
+}, {
+    scheduled: true,
+    timezone: "Asia/Kolkata"
 });
