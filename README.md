@@ -55,7 +55,7 @@ You can view the live preview of the project [here](https://fullstack-mern-stack
 
 4. **Install dependencies:**
    ```bash
-   npm install     # Run in both client and server directories
+   npm install     # Run in both Frontend and Backend directories
    ```
 5. **Start the servers:**
    Frontend:
