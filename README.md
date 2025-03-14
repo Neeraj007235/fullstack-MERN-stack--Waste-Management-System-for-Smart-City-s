@@ -35,7 +35,7 @@ You can view the live preview of the project [here](https://fullstack-mern-stack
 1. **Fork this repository:** Click the Fork button located in the top-right corner of this page.
 2. **Clone the repository:**
    ```bash
-   git clone https://github.com/<your-username>/fullstack-MERN-stack--Waste-Management-System-for-Smart-City-s.git
+   https://github.com/Neeraj007235/fullstack-MERN-stack--Waste-Management-System-for-Smart-City-s.git
    ```
 3. **Create .env file:**
    Inside the Backend directories create `.env` and set:
