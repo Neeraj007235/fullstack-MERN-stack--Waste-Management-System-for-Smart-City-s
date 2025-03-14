@@ -1,7 +1,6 @@
 import cron from "node-cron"; 
 import Work from "../models/work.model.js";
 
-// Schedule a cron job that runs every day at midnight
 cron.schedule("* * * * *", async () => {
     try {
         const now = new Date();
